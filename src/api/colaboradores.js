@@ -4,7 +4,7 @@ export const getColabsRequest = async () => {
   const token = localStorage.getItem("token");  
   try {
     return await axios.get(
-      `/users-collaborators`,
+      `/api/users-collaborators`,
       {
         headers: {
           "Authorization": `Bearer ${token}`,  
@@ -21,7 +21,7 @@ export const createColabRequest = async (colaborador) => {
     const token = localStorage.getItem("token"); 
     try {
       return await axios.post(
-        `/users-collaborators`,
+        `/api/users-collaborators`,
         colaborador,
         {
           headers: {
