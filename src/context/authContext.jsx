@@ -2,12 +2,13 @@ import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 import { loginRequest, registerRequest, getUsersRequest, verifyTokenRequest, verifyEmailRequest } from "../api/auth";
 
-
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within a AuthProvider");
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
   return context;
 };
 
@@ -16,18 +17,63 @@ export const AuthProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
-  const [emailVerified, setEmailVerified] = useState(null);
- 
+  const [loading, setLoading] = useState(true);
+  const [emailVerified, setEmailVerified] = useState(false);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const token = localStorage.getItem("token");
+      
+      if (token) {
+        try {
+          const res = await verifyTokenRequest();
+
+          const userData = await verifyTokenRequest(token);
+          if (!userData || Object.keys(userData).length === 0) {
+            setIsAuthenticated(false);  
+            return;
+          } 
+
+          const userRol = userData.rol;
+          setUser({...userData, isAdmin: userRol === 'Administrador', isSuper: userRol === 'SuperAdmin'
+          });
+          
+          setUser(res.data);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error("Error verificando token:", error);
+          localStorage.removeItem("token");
+          localStorage.removeItem("rol");
+          localStorage.removeItem("userRol");
+        }
+      }
+      setLoading(false);
+    };
+
+    loadUser();
+  }, []);
 
   const signup = async (user) => {
     try {
       const res = await registerRequest(user);
-      if (res.status === 200) {
-        setUser(res.data);
-        setIsAuthenticated(true);
+      setUser(res.data);
+      setIsAuthenticated(true);
+      
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("rol", res.data.rol || "user");
+      if (res.data.rol === "Administrador") {
+        localStorage.setItem("userRol", "Administrador");
+      } else if (res.data.rol === "SuperAdmin") {
+        localStorage.setItem("userRol", "SuperAdmin");
+      } else {
+        localStorage.setItem("userRol", "Colaborador");
       }
+      
+      return res.data;
     } catch (error) {
-      setErrors(error.response.data.message);
+      console.error(error);
+      setErrors(error.response?.data || ["Error en el registro"]);
+      throw error;
     }
   };
 
@@ -35,100 +81,82 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await loginRequest(user);
       setUser(res.data);
-      const { token } = res.data;
-      const { rol } = res.data;
-      localStorage.setItem("rol", rol);
-      localStorage.setItem("token", token);
       setIsAuthenticated(true);
+      
+      localStorage.setItem("token", res.data.token);
+      if (res.data.rol === "Administrador") {
+        localStorage.setItem("userRol", "Administrador");
+      } else if (res.data.rol === "SuperAdmin") {
+        localStorage.setItem("userRol", "SuperAdmin");
+      } else {
+        localStorage.setItem("userRol", "Colaborador");
+      }
+      
+      return res.data;
     } catch (error) {
-      console.log(error);
-    /*   setErrors(error.response.data.message); */
+      console.error(error);
+      setErrors(error.response?.data || ["Error en el inicio de sesión"]);
+      throw error;
     }
   };
 
-  const verifyEmail = async (email) => {
-    try {
-      const res = await verifyEmailRequest(email);
-      const userData = res.data || res; 
-      setEmailVerified(userData);
-    } catch (error) {
-      setErrors(error.response?.data?.message || ["Error al verificar email"]);
-    }
-  };
-
-  
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("userRol");
     setUser(null);
     setIsAuthenticated(false);
+    navigate('/login');
+  };
+
+  const verifyEmail = async (code) => {
+    try {
+      const res = await verifyEmailRequest({ code });
+      setEmailVerified(true);
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      setErrors(error.response?.data || ["Error en la verificación del correo"]);
+      throw error;
+    }
   };
 
 
-  const getUsers = async (username = "") => {
+  const getUsers = async () => {
     try {
-      const res = await getUsersRequest(username);
-      setUsers(res.data); 
-
     } catch (error) {
-     /*  console.error('Error fetching users:', error); */
-    } 
-  }; 
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const checkLogin = async () => {
-         
-     const token = localStorage.getItem("token");
-      if (!token) {
-        setIsAuthenticated(false);
-        return;
-      }
-      try {
-        const userData = await verifyTokenRequest(token);
-        if (!userData || Object.keys(userData).length === 0) {
-          setIsAuthenticated(false);  
-          return;
-        } 
-
-        const userRol = userData.rol;
-        setUser({...userData, isAdmin: userRol === 'Administrador', isSuper: userRol === 'SuperAdmin'
-        })
-
-        localStorage.setItem("userRol", userRol);
-
-        setIsAuthenticated(true);
-        setUser(res.data);
-        console.log("isAuthenticated:", isAuthenticated);
-        console.log("user:", user);
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
-   
-    checkLogin();
-  }, []);
-
-   useEffect(() => {
-    getUsers(); 
-  }, []);  
+    if (errors.length > 0) {
+      const timer = setTimeout(() => {
+        setErrors([]);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        users,
-        getUsers,
-        setUsers,
-        emailVerified,
-        setEmailVerified,
-        verifyEmail,
+        isAuthenticated,
+        errors,
+        loading,
         signup,
         signin,
         logout,
-        isAuthenticated,
-        errors,
+        verifyEmail,
+        emailVerified,
+        setEmailVerified,
+        users,
+        getUsers,
+        setUsers
       }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
