@@ -10,8 +10,7 @@ const KanbanCard = ({ task }) => {
 
 const estados = ["En progreso", "Finalizada", "En pausa", "En revisión"];
 
-const canEdit = user && (user._id === task.user_assigned || user._id === task.user);
-
+const canEdit = user && task && (user._id === task?.user_assigned || user._id === task?.user);
 
 const handleChangeStatus = async (nuevoEstado) => {
     try {
@@ -36,7 +35,13 @@ const handleChangeStatus = async (nuevoEstado) => {
         };
         }, []);
 
-        const assignedTo = task.user_assigned ? `Asignado a: ${task.assignedUsername || 'Usuario'}` : 'Sin asignar';
+        const assignedTo = task?.user_assigned 
+        ? `Asignado a: ${task.assignedUsername || 'Usuario'}` 
+        : 'Sin asignar';
+      
+      if (!task) {
+        return <div>Cargando tarea...</div>;
+      }
 
 
     return (
