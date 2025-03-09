@@ -10,6 +10,7 @@ import debounce from 'lodash/debounce';
 import { getUsersRequest } from "../../api/auth";
 import { useNavigate } from 'react-router-dom';
 import BotonAdd from "../../components/BotonAdd";
+import { NavBar } from "../../components/NavBar";
 
 
 export const GroupsPage = () => {
@@ -125,39 +126,7 @@ export const GroupsPage = () => {
 
       <BotonAdd onOpenModal={()=>setModalOpen(true)}/>
 
-    <div className="w-64 bg-gradient-to-b from-[#640d59] to-[#001e41] text-white">
-      <div className="p-5">
-        <h2 className="text-xl font-bold">Dashboard</h2>
-      </div> 
-      <nav>
-        <ul>
-        <li className="p-4 hover">
-               <button onClick={toggleMenu} className="w-full text-left flex items-center justify-between">
-                 <span>Menú</span>
-                 <ChevronDownIcon
-                   className={`h-5 w-5 text-white transition-transform ${isMenuOpen ? 'rotate-180' : ''}`}
-                 />
-               </button>
-               {isMenuOpen && (
-                 <ul className="pl-4 mt-2">
-                   <li className="p-2 hover:bg-gray-600 flex items-center text-white">
-                     <CheckCircleIcon className="h-5 w-5 mr-2 text-white" />
-                     Tareas finalizadas
-                   </li>
-                   <li className="p-2 hover:bg-gray-600 flex items-center text-white">
-                     <UserIcon  className="h-5 w-5 mr-2 text-white" />
-                    Perfil
-                   </li>
-                   <li className="p-2 hover:bg-gray-600 flex items-center text-white">
-                     <LogoutIcon  className="h-5 w-5 mr-2 text-white" />
-                     Cerrar sesión
-                   </li>
-        </ul>
-          )}
-       </li>
-           </ul>
-         </nav>
-       </div>
+   <NavBar/>
  
     <div className="flex-1 p-8">
       <h1 className="text-3xl">Bienvenido</h1>
