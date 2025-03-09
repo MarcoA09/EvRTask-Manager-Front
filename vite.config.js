@@ -1,11 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
+  base: '', // Intenta sin './' para evitar problemas con los estilos
   build: {
-    outDir: 'dist', 
+    outDir: 'dist',
+  },
+  server: {
+    historyApiFallback: true, // Asegura que las rutas de React funcionen correctamente
   },
 });
