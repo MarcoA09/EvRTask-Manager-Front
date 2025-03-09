@@ -109,9 +109,9 @@ export const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
-  const verifyEmail = async (code) => {
+  const verifyEmail = async (email) => {
     try {
-      const res = await verifyEmailRequest({ code });
+      const res = await verifyEmailRequest({ email });
       setEmailVerified(true);
       return res.data;
     } catch (error) {
