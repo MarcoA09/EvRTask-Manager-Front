@@ -24,14 +24,14 @@ function App() {
               <Route path="/" element={<LandinPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-           {/*    <Route element={<ProtectPage />}> */}
+               <Route element={<ProtectPage />}> 
                   <Route path="/dashboard" element={<MainLayaout />} />
                   <Route path="/tasks" element={<TasksPage />} />
                   <Route path="/groups" element={<GroupsPage />} />
                   <Route path="/groups/tasks/:idGroup" element={<GroupsTasks />} />
                   <Route path="/users-collaborators" element={< CollaboratorsPage />} />
                   {/*    <Route path='/groups/integrants/:idGroup' element={<MainLayaout/>} /> */}
-                  {/* </Route> */}
+                   </Route> 
             </Routes>
           </BrowserRouter>
           </ColabsProvider>
