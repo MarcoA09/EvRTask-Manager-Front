@@ -1,15 +1,15 @@
 import axios from '../api/axios';
 
-export const registerRequest = user => axios.post(`/register`, user)
+export const registerRequest = user => axios.post(`/api/register`, user)
 
-export const loginRequest = user => axios.post(`/login`, user)
+export const loginRequest = user => axios.post(`/api/login`, user)
 
 export const getUsersRequest = async (username) => {
   const token = localStorage.getItem("token");
   
   try {
       const response = await axios.get(
-          `/users?username=${username}`,
+          `/api/users?username=${username}`,
           {
               headers: {
                   "Authorization": `Bearer ${token}`,
@@ -25,7 +25,7 @@ export const getUsersRequest = async (username) => {
   export const verifyTokenRequest = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`/verify`, {
+      const response = await axios.get(`/api/verify`, {
         headers: {
           "Authorization": `Bearer ${token}`, 
         }
@@ -40,7 +40,7 @@ export const getUsersRequest = async (username) => {
 
   export const verifyEmailRequest = async (email) => {
     try {
-      const response = await axios.post(`/verifyEmail`, {email: email.email}); 
+      const response = await axios.post(`/api/verifyEmail`, {email: email.email}); 
       return response.data;
     } catch (error) {
       console.log(error);
