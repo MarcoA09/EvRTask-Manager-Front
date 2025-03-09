@@ -20,6 +20,12 @@ export function TaskProvider({ children }) {
 
   const getTasksGroups = async (idGroup) => {
     try {
+      if (!idGroup) {
+        console.warn("No se proporcionó un ID de grupo");
+        setTasksGroup([]); 
+        return;
+      }
+      
       const res = await getTasksGroupRequest(idGroup);
       setTasksGroup(res.data);
     } catch (error) {
