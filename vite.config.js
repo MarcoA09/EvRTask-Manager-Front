@@ -7,14 +7,14 @@ export default defineConfig({
   plugins: [react()],
   css: {
     postcss: {
-      plugins: [tailwindcss(), autoprefixer()], // Agrega Tailwind correctamente
+      plugins: [tailwindcss(), autoprefixer()], 
     },
   },
-  base: './', // Usa rutas relativas para evitar problemas en Vercel
+  base: './', 
   build: {
     outDir: 'dist',
   },
   server: {
-    historyApiFallback: true, // Permite navegación en Vercel
+    historyApiFallback: true, 
   },
 });
