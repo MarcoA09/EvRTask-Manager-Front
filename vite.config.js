@@ -1,15 +1,20 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  css: {
+    postcss: {
+      plugins: [tailwindcss(), autoprefixer()], // Agrega Tailwind correctamente
+    },
+  },
+  base: './', // Usa rutas relativas para evitar problemas en Vercel
   build: {
-    outDir: 'dist' 
+    outDir: 'dist',
   },
   server: {
-    historyApiFallback: true 
-  }
+    historyApiFallback: true, // Permite navegación en Vercel
+  },
 });
