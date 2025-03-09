@@ -38,9 +38,9 @@ export const getUsersRequest = async (username) => {
   };
   
 
-  export const verifyEmailRequest = async (email) => {
+  export const verifyEmailRequest = async (emailData) => {
     try {
-      const response = await axios.post(`/api/verifyEmail`, {email: email.email}); 
+      const response = await axios.post(`/api/verifyEmail`, emailData); 
       return response.data;
     } catch (error) {
       console.log(error);
