@@ -4,7 +4,7 @@ export const getTasksRequest = async () => {
   const token = localStorage.getItem("token");  
   try {
     return await axios.get(
-      `/dashboard`,
+      `/api/dashboard`,
       {
         headers: {
           "Authorization": `Bearer ${token}`,  
@@ -21,7 +21,7 @@ export const createTaskRequest = async (task) => {
     const token = localStorage.getItem("token"); 
     try {
       return await axios.post(
-        `/task`,
+        `/api/task`,
         task,
         {
           headers: {
@@ -38,7 +38,7 @@ export const createTaskRequest = async (task) => {
 export const getTasksGroupRequest = async (idGroup) => {
   const token = localStorage.getItem("token");
   try {
-    return await axios.get(`/groups/tasks/${idGroup}`, {
+    return await axios.get(`/api/groups/tasks/${idGroup}`, {
       headers: {
         "Authorization": `Bearer ${token}`,
       }
@@ -52,7 +52,7 @@ export const updateTaskRequest = async (id, updateData) => {
   const token = localStorage.getItem("token");  
   try {
     return await axios.put(
-      `/task/${id}`,
+      `/api/task/${id}`,
       updateData,
         {
         headers: {
