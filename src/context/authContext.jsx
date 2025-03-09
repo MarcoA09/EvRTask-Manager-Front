@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyEmail = async (email) => {
     try {
-      const res = await verifyEmailRequest( email );
+      const res = await verifyEmailRequest(email);
       setEmailVerified(true);
       return res.data;
     } catch (error) {
