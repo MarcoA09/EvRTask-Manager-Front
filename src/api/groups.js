@@ -4,7 +4,7 @@ export const getGroupsRequest = async () => {
   const token = localStorage.getItem("token"); 
   try {
     return await axios.get(
-     `/groups`, 
+     `/api/groups`, 
      {
       headers: {
         "Authorization": `Bearer ${token}`, 
@@ -21,7 +21,7 @@ export const createGroupRequest = async (group) => {
     const token = localStorage.getItem("token"); 
     try {
       return await axios.post(
-        `/groups`,
+        `/api/groups`,
         group,
         {
           headers: {
@@ -38,7 +38,7 @@ export const createGroupRequest = async (group) => {
 export const getIntegrantsGroupRequest = async (idGroup) => {
   const token = localStorage.getItem("token");
   try {
-    return await axios.get(`/groups/integrants/${idGroup}`, {
+    return await axios.get(`/api/groups/integrants/${idGroup}`, {
       headers: {
         "Authorization": `Bearer ${token}`,
       }
