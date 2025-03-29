@@ -1,0 +1,61 @@
+import axios from '../api/axios';
+
+export const registerRequest = user => axios.post(`/register`, user)
+
+export const registerHomeRequest = user => axios.post(`/registerhome`, user)
+
+export const loginRequest = user => axios.post(`/login`, user)
+
+export const getUsersRequest = async (username) => {
+  const token = localStorage.getItem("token");
+  
+  try {
+      const response = await axios.get(
+          `/users?username=${username}`,
+          {
+              headers: {
+                  "Authorization": `Bearer ${token}`,
+              }
+          }
+      );
+      return response.data;
+  } catch (error) {
+      console.log(error);
+      throw error;
+  }
+};
+  export const verifyTokenRequest = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(`/verify`, {
+        headers: {
+          "Authorization": `Bearer ${token}`, 
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  
+
+  export const verifyEmailRequest = async (emailData) => {
+    console.log("Antes de enviar:", emailData); 
+
+    const email = emailData.email?.email || emailData.email;
+    try {
+      const response = await axios.post(`/verifyEmail`, {email}); 
+      return response.data;
+    } catch (error) {
+      console.log(error);
+
+      if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw error;
+  }
+};
+
+
+
